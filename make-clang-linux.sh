@@ -21,30 +21,16 @@ git clone https://github.com/llvm/llvm-project.git --branch ${LLVM_BRANCH} --sin
 mkdir -p ${FOLDER}/build
 cd ${FOLDER}/build
 
-
-# -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
-
-echo "building clang"
-cmake ../llvm -DLLVM_ENABLE_PROJECTS="clang" \
+echo "building clang/lld"
+cmake ../llvm -DLLVM_ENABLE_PROJECTS='clang;lld' \
   -DCMAKE_BUILD_TYPE=MinSizeRel \
   -DCMAKE_EXE_LINKER_FLAGS=-static \
   -DLLVM_TARGETS_TO_BUILD=WebAssembly \
   -DTERMINFO_LIB=/usr/lib/x86_64-linux-gnu/libncurses.a \
   -DZLIB_LIBRARY_RELEASE=/usr/lib/x86_64-linux-gnu/libz.a
-make -j $(nproc)
-# Not sure why but I need to launch is again to generate the links
-make
-
-echo "building lld"
-cmake ../llvm -DLLVM_ENABLE_PROJECTS="lld" \
-  -DCMAKE_BUILD_TYPE=MinSizeRel \
-  -DCMAKE_EXE_LINKER_FLAGS=-static \
-  -DLLVM_TARGETS_TO_BUILD=WebAssembly \
-  -DTERMINFO_LIB=/usr/lib/x86_64-linux-gnu/libncurses.a \
-  -DZLIB_LIBRARY_RELEASE=/usr/lib/x86_64-linux-gnu/libz.a
-make -j $(nproc)
-# Not sure why but I need to launch is again to generate the links
-make
+# There are errors due to trying to statically link with dynamic libraries.
+# Ignoring those errors as we still seems to be able to generate the executables.
+make -j $(nproc) -i
 
 # Check executables are properly created and get their full paths
 cd bin
@@ -62,12 +48,13 @@ then
   exit 1
 fi
 
+popd > /dev/null
+
 # Install the executables in dist
 DIST=dist/$(node -e 'console.log(`${process.arch}-${process.platform}`)')
-popd > /dev/null
 mkdir -p ${DIST}
-cp ${CLANG_BIN} ${DIST}/
-cp ${LLD_BIN} ${DIST}/
+cp -v ${CLANG_BIN} ${DIST}/
+cp -v ${LLD_BIN} ${DIST}/
 strip ${DIST}/*
 
 echo "done."

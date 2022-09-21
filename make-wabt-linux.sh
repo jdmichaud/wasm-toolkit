@@ -29,6 +29,6 @@ make -j $(nproc)
 popd > /dev/null
 
 DIST=dist/$(node -e 'console.log(`${process.arch}-${process.platform}`)')
-cp ${FOLDER}/bin/* ${DIST}/
+cp -v ${FOLDER}/bin/* ${DIST}/
 strip ${DIST}/*
 
