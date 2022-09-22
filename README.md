@@ -1,6 +1,7 @@
 # wasm-toolkit
 
-Provides statically build binaries for WASM workflows.
+Ensure an environment to compile to WASM. Either use the local clang installation
+or provides statically build binaries for WASM workflows.
 
 # How to install
 
@@ -99,9 +100,10 @@ qemu-system-x86_64 -enable-kvm \
 You might want to install windows without the `-nic` option first to avoid
 creating an online account and enable the option on the first boot.
 
-Once virtdio drivers are install, you can add the option:
+Once virtdio drivers are install, you can add the options:
 ```bash
 -vga virtio
+-smp cores=$(nproc)
 ```
 
 On windows, you will need build tools to be installed. You can find them
