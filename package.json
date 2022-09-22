@@ -1,6 +1,6 @@
 {
   "name": "@jdmichaud/wasm-toolkit",
-  "version": "15.0.0",
+  "version": "15.0.1",
   "description": "Statically compiled clang binary and friends for WASM accessible via npx",
   "main": "index.js",
   "scripts": {
