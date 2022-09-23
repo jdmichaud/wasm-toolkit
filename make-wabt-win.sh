@@ -23,7 +23,9 @@ git submodule update --init
 mkdir -p build
 cd build
 
-cmake ../ -DBUILD_TESTS=OFF
+cmake ../ -DBUILD_TESTS=OFF \
+  -DCMAKE_BUILD_TYPE=MinSizeRel \
+  -DCMAKE_EXE_LINKER_FLAGS=-static
 msbuild.exe -maxcpucount WABT.sln /property:Configuration=Release
 
 popd > /dev/null
