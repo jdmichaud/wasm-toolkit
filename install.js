@@ -24,7 +24,7 @@ EXIT /b
 SETLOCAL
 CALL :find_dp0
 
-"${from.replaceAll('/', '\\')}.exe" %*
+"${from.replace(/\//g, '\\')}.exe" %*
 `);
 }
 
@@ -42,13 +42,12 @@ function compileToWasm(clangPath) {
 
     child.stdin.write(testProgram);
     child.stdout.on('data', data => {
-      console.log(data.toString());
+      console.log(data.toString()); // Should not produce anything, but just in case.
     });
     child.stderr.on('data', data => {
-      console.log(data.toString());
+      console.error(data.toString());
     });
     child.on('close', (exitCode) => {
-      // console.log('exitCode', exitCode);
       resolve(exitCode);
     });
     child.stdin.end();
@@ -60,7 +59,8 @@ function isExe(pathToTest) {
   if (isWindows) {
     const pathExt = process.env.PATHEXT.split(';') ?? ['.EXE', '.CMD', '.BAT', '.COM'];
     return ['', ...pathExt].some(ext => {
-      const stat = fs.statSync(path.join(pathToTest, ext), { throwIfNoEntry: false });
+      let stat;
+      try { stat = fs.statSync(path.join(pathToTest, ext), { throwIfNoEntry: false }); } catch (e) {}
       return stat !== undefined && stat.isFile();
     });
   }
@@ -84,7 +84,6 @@ async function checkLocalClang() {
     return false;
   }
   const exitCode = await compileToWasm(clangPath);
-  console.log('exitCode', exitCode);
   return exitCode === 0;
 }
 
@@ -97,7 +96,7 @@ async function main() {
       throw e;
     }
   }
- 
+
   const localClangOk = await checkLocalClang();
   if (localClangOk) {
     // Local clang is able to compile to wasm. Link to it and bail.
@@ -114,7 +113,7 @@ async function main() {
     process.exit(1);
   }
 
-  const cwd = __dirname.replaceAll('\\', '/');
+  const cwd = __dirname.replace(/\\/g, '/');
 
   if (isWindows) {
     createLink(`${cwd}/${distPath}/clang`, '../../.bin/clang');
@@ -140,7 +139,3 @@ async function main() {
 }
 
 main().then(ret => process.exit(ret));
-// compileToWasm('/usr/bin/clang').then(r => console.log(r));
-// console.log(which('clang'));
-// checkLocalClang().then(r => console.log(r));
-
