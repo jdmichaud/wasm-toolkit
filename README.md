@@ -1,7 +1,7 @@
 # wasm-toolkit
 
-Ensure an environment to compile to WASM. Either use the local clang installation
-or provides statically build binaries for WASM workflows.
+Ensures your environment can compile C/C++ code to freestanding WASM.
+Either use the local `clang` installation or provides statically build binaries.
 
 # How to install
 
@@ -51,7 +51,7 @@ And hopefully `npm pack` will suffice to package the built tools.
 ## How to build on linux
 
 You will need a C/C++ compiler (gcc 11 is fine) and cmake (at least version 3).
-To build cmake, execute:
+To build clang, execute:
 ```bash
 ./make-clang-linux.sh
 ```
@@ -65,6 +65,19 @@ This should produce the clang/ldd and utilities statically linked binaries in
 the appropriate `dist/` folder.
 
 ## How to build on windows
+
+You will need a C/C++ compiler (Visual Studio 2019 is fine) and cmake (at least
+version 3).
+
+To build clang, execute:
+```bash
+./make-clang-win.sh
+```
+
+To build the WASM utilities:
+```bash
+./make-wabt-win.sh
+```
 
 ## Windows VM on linux
 
