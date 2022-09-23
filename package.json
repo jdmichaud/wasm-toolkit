@@ -1,11 +1,11 @@
 {
   "name": "@jdmichaud/wasm-toolkit",
-  "version": "15.0.1",
+  "version": "15.0.2",
   "description": "Statically compiled clang binary and friends for WASM accessible via npx",
   "main": "index.js",
-  "engines" : {
-    "npm" : ">=6.14.7",
-    "node" : ">=14.8.0"
+  "engines": {
+    "npm": ">=6.14.7",
+    "node": ">=14.8.0"
   },
   "scripts": {
     "build": "./make-clang-linux.sh && ./make-wabt-linux.sh",
