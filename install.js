@@ -65,7 +65,10 @@ function isExe(pathToTest) {
     });
   }
   // on unix like
-  const stat = fs.statSync(pathToTest, { throwIfNoEntry: false });
+  let stat;
+  try {
+    stat = fs.statSync(pathToTest, { throwIfNoEntry: false });
+  } catch (e) {}
   if (stat === undefined) return false;
   return stat.isFile() && (stat.mode & fs.constants.X_OK);
 }
