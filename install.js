@@ -120,9 +120,11 @@ async function main() {
 
   if (isWindows) {
     createLink(`${cwd}/${distPath}/clang`, '../../.bin/clang');
+    createLink(`${cwd}/${distPath}/clang`, '../../.bin/clang++');
     createLink(`${cwd}/${distPath}/wasm-ld`, '../../.bin/wasm-ld');
     } else {
-    createLink(`${cwd}/${distPath}/clang-15`, '../../.bin/clang');
+    createLink(`${cwd}/${distPath}/clang-14`, '../../.bin/clang');
+    createLink(`${cwd}/${distPath}/clang`, '../../.bin/clang++');
     createLink(`${cwd}/${distPath}/lld`, '../../.bin/wasm-ld');
   }
   createLink(`${cwd}/${distPath}/spectest-interp`, '../../.bin/spectest-interp');

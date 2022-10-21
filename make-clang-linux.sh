@@ -1,39 +1,53 @@
 #!/usr/bin/env bash
 
-LLVM_BRANCH="release/15.x"
+WASI_SDK_TAG="wasi-sdk-16"
 if [ $# -eq 1 ]
 then
-  LLVM_BRANCH=$1
+  WASI_SDK_TAG=$1
 fi
-FOLDER=`echo llvm-project-${LLVM_BRANCH} | tr '/' '_'`
+FOLDER=$(pwd)/${WASI_SDK_TAG}
+BIN_FOLDER="${FOLDER}/build/llvm/bin"
 
-if [[ ! -n "$(which cmake)" && -x "$(which cmake)" ]]
+if [[ ! -n $(which cmake) ]] && [[ ! -x $(which cmake) ]]
 then
   echo "error: cmake must be installed"
   exit 2
 fi
 
-echo "building ${LLVM_BRANCH}"
+if [[ ! -n $(which ninja) ]] && [[ ! -x $(which ninja) ]]
+then
+  echo "error: ninja must be installed"
+  exit 2
+fi
+
+echo "building ${WASI_SDK_TAG}"
 pushd . > /dev/null
 
 # Download llvm repository
-git clone https://github.com/llvm/llvm-project.git --branch ${LLVM_BRANCH} --single-branch --depth 1 $FOLDER
-mkdir -p ${FOLDER}/build
-cd ${FOLDER}/build
+if [ ! -d ${FOLDER} ]
+then
+  git clone --recursive https://github.com/WebAssembly/wasi-sdk.git --branch ${WASI_SDK_TAG} --single-branch --depth 1 ${FOLDER}
+fi
+cd ${FOLDER}
 
-echo "building clang/lld"
-cmake ../llvm -DLLVM_ENABLE_PROJECTS='clang;lld' \
-  -DCMAKE_BUILD_TYPE=MinSizeRel \
-  -DCMAKE_EXE_LINKER_FLAGS=-static \
-  -DLLVM_TARGETS_TO_BUILD=WebAssembly \
-  -DTERMINFO_LIB=/usr/lib/x86_64-linux-gnu/libncurses.a \
-  -DZLIB_LIBRARY_RELEASE=/usr/lib/x86_64-linux-gnu/libz.a
-# There are errors due to trying to statically link with dynamic libraries.
-# Ignoring those errors as we still seems to be able to generate the executables.
-make -j $(nproc) -i
+if patch --dry-run --reverse --force < ../clang-static.patch >/dev/null 2>&1; then
+  echo "Patch already applied - skipping."
+else # patch not yet applied
+  echo "Patching..."
+  patch -Ns < ../clang-static.patch || (echo "Patch failed" >&2 && exit 1)
+fi
 
+echo ${BIN_FOLDER}
+if [ ! -d ${BIN_FOLDER} ]
+then
+  echo "make"
+  make -j$(nproc) package
+fi
+
+# echo "done for now."
+# exit 0
 # Check executables are properly created and get their full paths
-cd bin
+cd ${BIN_FOLDER}
 CLANG_BIN=$(realpath $(readlink clang))
 LLD_BIN=$(realpath lld)
 if [ ! -x "$CLANG_BIN" ]
@@ -58,4 +72,3 @@ cp -v ${LLD_BIN} ${DIST}/
 strip ${DIST}/*
 
 echo "done."
-
