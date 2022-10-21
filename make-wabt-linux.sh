@@ -7,7 +7,7 @@ then
 fi
 FOLDER=`echo wabt-${TAG}`
 
-if [[ ! -n "$(which cmake)" && -x "$(which cmake)" ]]
+if [[ ! -n $(which cmake) ]] && [[ ! -x $(which cmake) ]]
 then
   echo "error: cmake must be installed"
   exit 2

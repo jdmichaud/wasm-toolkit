@@ -1,0 +1,1 @@
+./clang -resource-dir /home/jd/projects/wasm-toolkit/wasi-sdk-16/build/install/opt/wasi-sdk/lib/clang/14.0.4/include/^C-sysroot=${WASI_SDK_PATH}/share/wasi-sysroot -v --target=wasm32 --no-standard-libraries -Wl,--export-all -Wl,--no-entry,--allow-undefined -o add.wasm add.c
