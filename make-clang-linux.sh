@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-LLVM_BRANCH="release/15.x"
+LLVM_BRANCH="release/19.x"
 if [ $# -eq 1 ]
 then
   LLVM_BRANCH=$1
@@ -27,7 +27,8 @@ cmake ../llvm -DLLVM_ENABLE_PROJECTS='clang;lld' \
   -DCMAKE_EXE_LINKER_FLAGS=-static \
   -DLLVM_TARGETS_TO_BUILD=WebAssembly \
   -DTERMINFO_LIB=/usr/lib/x86_64-linux-gnu/libncurses.a \
-  -DZLIB_LIBRARY_RELEASE=/usr/lib/x86_64-linux-gnu/libz.a
+  -DZLIB_LIBRARY_RELEASE=/usr/lib/x86_64-linux-gnu/libz.a \
+  -DLLVM_ENABLE_ZSTD=off
 # There are errors due to trying to statically link with dynamic libraries.
 # Ignoring those errors as we still seems to be able to generate the executables.
 make -j $(nproc) -i

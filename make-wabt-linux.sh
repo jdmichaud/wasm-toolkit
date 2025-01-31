@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TAG="1.0.29"
+TAG="1.0.36"
 if [ $# -eq 1 ]
 then
   TAG=$1
@@ -25,7 +25,8 @@ cd build
 
 cmake ../ -DBUILD_TESTS=OFF \
   -DCMAKE_BUILD_TYPE=MinSizeRel \
-  -DCMAKE_EXE_LINKER_FLAGS=-static
+  -DCMAKE_EXE_LINKER_FLAGS=-static \
+  -DUSE_INTERNAL_SHA256=1
 make -j $(nproc)
 
 popd > /dev/null
