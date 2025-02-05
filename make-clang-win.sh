@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-LLVM_BRANCH="release/15.x"
+LLVM_BRANCH="release/19.x"
 if [ $# -eq 1 ]
 then
   LLVM_BRANCH=$1

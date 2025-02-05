@@ -120,8 +120,8 @@ async function main() {
 
   if (isWindows) {
     createLink(`${cwd}/${distPath}/clang`, '../../.bin/clang');
-    createLink(`${cwd}/${distPath}/wasm-ld`, '../../.bin/wasm-ld');
-    } else {
+    createLink(`${cwd}/${distPath}/lld`, '../../.bin/wasm-ld');
+  } else {
     createLink(`${cwd}/${distPath}/clang-19`, '../../.bin/clang');
     createLink(`${cwd}/${distPath}/lld`, '../../.bin/wasm-ld');
   }

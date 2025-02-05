@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TAG="1.0.29"
+TAG="1.0.36"
 if [ $# -eq 1 ]
 then
   TAG=$1
